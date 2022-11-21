@@ -1,16 +1,27 @@
-# This is a sample Python script.
+import json
+import requests
+from settings import TOKEN
+from pprint import pprint
+from settings import access_token
+from settings import user_id
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+class VK:
+   def __init__(self, access_token, user_id, version='5.131'):
+       self.token = access_token
+       self.id = user_id
+       self.version = version
+       self.params = {'access_token': self.token, 'v': self.version}
+
+   def users_info(self):
+       url = 'https://api.vk.com/method/users.get'
+       params = {'user_ids': self.id}
+       response = requests.get(url, params={**self.params, **params})
+       return response.json()
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+access_token = access_token
+user_id = user_id
+vk = VK(access_token, user_id)
+print(vk.users_info())
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
