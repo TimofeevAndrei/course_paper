@@ -23,13 +23,26 @@ class VK:
        url = 'https://api.vk.com/method/photos.get'
        params = {'user_ids': self.id, 'album_id': self.aid}
        response = requests.get(url, params={**self.params, **params})
-       res = response.json()
-       return res
+       return response.json()
 
 
 access_token = access_token
 user_id = user_id
 vk = VK(access_token, user_id)
-pprint(vk.photos_get())
+res = vk.photos_get()
+for x in res.values():
+    for y in x['items']:
+        for s in y['sizes']:
+            if s['type'] == 'z':
+                avatar = s['url']
+                print(avatar)
+
+
+#
+# file_list = ['test.txt', 'test2.txt']
+# ya = YaUploader(TOKEN)
+# for x in file_list:
+# ya.upload(x, 'name')
+
 
 
