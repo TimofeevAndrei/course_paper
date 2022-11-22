@@ -5,6 +5,7 @@ from pprint import pprint
 from settings import access_token
 from settings import user_id
 
+
 class VK:
    def __init__(self, access_token, user_id, version='5.131'):
        self.token = access_token
@@ -26,12 +27,35 @@ class VK:
        return response.json()
 
 
+class YA:
+    def __init__(self, token: str):
+        self.token = token
+
+    def get_headers(self):
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': f'OAuth {self.token}'}
+
+    def create_folder(self, name):
+        URL = 'https://cloud-api.yandex.net/v1/disk/resources/'
+        requests.put(f'{URL}?path={name}', headers=self.get_headers())
+
+    def upload_file(self, link, name):
+        uri = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
+        path = f"{name_dir}/{name}"
+        params = {'url': link, 'path': path, 'disable_redirects': True}
+        response = requests.post(uri, headers=self.get_headers(), params=params)
+        pprint(response)
+
+
+name_dir = 'avatar'
+ya = YA(TOKEN)
 access_token = access_token
 user_id = user_id
 vk = VK(access_token, user_id)
 res = vk.photos_get()
-# pprint(res)
 avatar_links = {}
+
 for x in res.values():
     for y in x['items']:
         # pprint(y)
@@ -43,8 +67,10 @@ for x in res.values():
                     avatar_links.update({y['likes']['count']: s['url']})
 
 
-
 pprint(avatar_links)
+ya.create_folder(name_dir)
+for k, v in avatar_links.items():
+    ya.upload_file(v, k)
 
 
 
