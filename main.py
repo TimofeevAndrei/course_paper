@@ -47,16 +47,12 @@ class YA:
         uri = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
         path = f"{name_dir}/{name}"
         params = {'url': link, 'path': path, 'disable_redirects': True}
-        response = requests.post(uri, headers=self.get_headers(), params=params)
-        # pprint(response)
-
-
+        requests.post(uri, headers=self.get_headers(), params=params)
 
 
 def grab_avatars():
     for x in res.values():
         for y in x['items']:
-            # pprint(y)
             for s in y['sizes']:
                 if s['type'] == 'z':
                     if y['likes']['count'] in avatar_links.keys():
@@ -64,7 +60,11 @@ def grab_avatars():
                     else:
                         avatar_links.update({y['likes']['count']: s['url']})
     ya.create_folder(name_dir)
+    num = 0
     for k, v in tqdm(avatar_links.items(), ncols=80, ascii=True, desc='Total'):
+        num += 1
+        if num == 11:
+            break
         ya.upload_file(v, k)
 
     return print('Загрузка завершена')
@@ -79,7 +79,6 @@ res = vk.photos_get()
 avatar_links = {}
 
 grab_avatars()
-
 
 
 
