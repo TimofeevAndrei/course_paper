@@ -21,7 +21,7 @@ class VK:
    def photos_get(self):
        self.aid = 'profile'
        url = 'https://api.vk.com/method/photos.get'
-       params = {'user_ids': self.id, 'album_id': self.aid}
+       params = {'user_ids': self.id, 'album_id': self.aid, 'extended': 1}
        response = requests.get(url, params={**self.params, **params})
        return response.json()
 
@@ -30,19 +30,26 @@ access_token = access_token
 user_id = user_id
 vk = VK(access_token, user_id)
 res = vk.photos_get()
+# pprint(res)
+avatar_links = {}
 for x in res.values():
     for y in x['items']:
+        # pprint(y)
         for s in y['sizes']:
             if s['type'] == 'z':
-                avatar = s['url']
-                print(avatar)
+                if y['likes']['count'] in avatar_links.keys():
+                    avatar_links.update({y['likes']['count'] + y['date']: s['url']})
+                else:
+                    avatar_links.update({y['likes']['count']: s['url']})
 
 
-#
-# file_list = ['test.txt', 'test2.txt']
-# ya = YaUploader(TOKEN)
-# for x in file_list:
-# ya.upload(x, 'name')
+
+pprint(avatar_links)
+
+
+
+
+
 
 
 
