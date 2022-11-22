@@ -4,6 +4,9 @@ from settings import TOKEN
 from pprint import pprint
 from settings import access_token
 from settings import user_id
+from tqdm import tqdm
+from time import sleep
+
 
 
 class VK:
@@ -45,7 +48,26 @@ class YA:
         path = f"{name_dir}/{name}"
         params = {'url': link, 'path': path, 'disable_redirects': True}
         response = requests.post(uri, headers=self.get_headers(), params=params)
-        pprint(response)
+        # pprint(response)
+
+
+
+
+def grab_avatars():
+    for x in res.values():
+        for y in x['items']:
+            # pprint(y)
+            for s in y['sizes']:
+                if s['type'] == 'z':
+                    if y['likes']['count'] in avatar_links.keys():
+                        avatar_links.update({y['likes']['count'] + y['date']: s['url']})
+                    else:
+                        avatar_links.update({y['likes']['count']: s['url']})
+    ya.create_folder(name_dir)
+    for k, v in tqdm(avatar_links.items(), ncols=80, ascii=True, desc='Total'):
+        ya.upload_file(v, k)
+
+    return print('Загрузка завершена')
 
 
 name_dir = 'avatar'
@@ -56,21 +78,8 @@ vk = VK(access_token, user_id)
 res = vk.photos_get()
 avatar_links = {}
 
-for x in res.values():
-    for y in x['items']:
-        # pprint(y)
-        for s in y['sizes']:
-            if s['type'] == 'z':
-                if y['likes']['count'] in avatar_links.keys():
-                    avatar_links.update({y['likes']['count'] + y['date']: s['url']})
-                else:
-                    avatar_links.update({y['likes']['count']: s['url']})
+grab_avatars()
 
-
-pprint(avatar_links)
-ya.create_folder(name_dir)
-for k, v in avatar_links.items():
-    ya.upload_file(v, k)
 
 
 
