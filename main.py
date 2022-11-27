@@ -49,8 +49,8 @@ class YA:
         response = requests.post(uri, headers=self.get_headers(), params=params)
         return response
 
-    # Вопрос хотел использовать данный метод для формирования json файла по итогу загрузки
-    # но сколько не старался, данный метод пропускал один последний загружаемый файл.
+    # Вопрос хотел использовать данный метод для формирования основы для json файла по итогу загрузки
+    # но сколько не старался, данный метод пропускал один последний загружаемый файл. Так и не поняли в чем проблема
     # def file_info(self, num):
     #     uri = 'https://cloud-api.yandex.net/v1/disk/resources/last-uploaded'
     #     params = {'limit': num, 'fields': 'items.name'}
@@ -94,6 +94,9 @@ avatar_links = {}
 uploaded_files = []
 
 grab_avatars(size)
+
+with open("upload_files.json", "w") as x:
+    json.dump(uploaded_files, x)
 
 
 
