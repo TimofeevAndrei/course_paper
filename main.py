@@ -46,13 +46,16 @@ class YA:
         uri = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
         path = f"{name_dir}/{name}.jpg"
         params = {'url': link, 'path': path, 'disable_redirects': True}
-        requests.post(uri, headers=self.get_headers(), params=params)
+        response = requests.post(uri, headers=self.get_headers(), params=params)
+        return response
 
-    def file_info(self, num):
-        uri = 'https://cloud-api.yandex.net/v1/disk/resources/last-uploaded'
-        params = {'limit': num, 'fields': 'items.name'}
-        response = requests.get(uri, headers=self.get_headers(), params=params)
-        return response.json()
+    # Вопрос хотел использовать данный метод для формирования json файла по итогу загрузки
+    # но сколько не старался, данный метод пропускал один последний загружаемый файл.
+    # def file_info(self, num):
+    #     uri = 'https://cloud-api.yandex.net/v1/disk/resources/last-uploaded'
+    #     params = {'limit': num, 'fields': 'items.name'}
+    #     response = requests.get(uri, headers=self.get_headers(), params=params)
+    #     return response.json()
 
 
 def grab_avatars(size):
@@ -71,9 +74,14 @@ def grab_avatars(size):
         if num == 11:
             break
         ya.upload_file(v, k)
-
     print(f'Upload, {num} file(s)')
-    return pprint(ya.file_info(num))
+    if len(avatar_links) == num:
+        for k in avatar_links.keys():
+            temp_dict = {}
+            temp_dict['file_name'] = f'{k}.jpg'
+            temp_dict['size'] = size
+            uploaded_files.append(temp_dict)
+    return pprint(uploaded_files)
 
 size = 'z'
 name_dir = 'avatar'
@@ -83,9 +91,12 @@ user_id = user_id
 vk = VK(access_token, user_id)
 res = vk.photos_get()
 avatar_links = {}
-
+uploaded_files = []
 
 grab_avatars(size)
+
+
+
 
 
 
