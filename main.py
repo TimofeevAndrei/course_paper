@@ -98,6 +98,9 @@ grab_avatars(size)
 with open("upload_files.json", "w") as x:
     json.dump(uploaded_files, x)
 
+# Осталось сделать ввод токенов и айди
+# Все зависимости должны быть указаны в файле requiremеnts.txt
+
 
 
 
