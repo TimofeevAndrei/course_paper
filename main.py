@@ -49,6 +49,12 @@ class YA:
         params = {'url': link, 'path': path, 'disable_redirects': True}
         requests.post(uri, headers=self.get_headers(), params=params)
 
+    def file_info(self, num):
+        uri = 'https://cloud-api.yandex.net/v1/disk/resources/last-uploaded'
+        params = {'limit': num, 'fields': 'items.name'}
+        response = requests.get(uri, headers=self.get_headers(), params=params)
+        return response.json()
+
 
 def grab_avatars():
     for x in res.values():
@@ -67,7 +73,8 @@ def grab_avatars():
             break
         ya.upload_file(v, k)
 
-    return print('Загрузка завершена')
+    print(f'Upload, {num} file(s)')
+    return pprint(ya.file_info(num))
 
 
 name_dir = 'avatar'
@@ -78,7 +85,9 @@ vk = VK(access_token, user_id)
 res = vk.photos_get()
 avatar_links = {}
 
+
 grab_avatars()
+
 
 
 
