@@ -17,16 +17,15 @@ class VK:
        self.params = {'access_token': self.token, 'v': self.version}
 
    def users_info(self):
-       url = 'https://api.vk.com/method/users.get'
+       uri = 'https://api.vk.com/method/users.get'
        params = {'user_ids': self.id}
-       response = requests.get(url, params={**self.params, **params})
+       response = requests.get(uri, params={**self.params, **params})
        return response.json()
 
    def photos_get(self):
-       self.aid = 'profile'
-       url = 'https://api.vk.com/method/photos.get'
-       params = {'user_ids': self.id, 'album_id': self.aid, 'extended': 1}
-       response = requests.get(url, params={**self.params, **params})
+       uri = 'https://api.vk.com/method/photos.get'
+       params = {'user_ids': self.id, 'album_id': 'profile', 'extended': 1}
+       response = requests.get(uri, params={**self.params, **params})
        return response.json()
 
 
@@ -40,12 +39,12 @@ class YA:
             'Authorization': f'OAuth {self.token}'}
 
     def create_folder(self, name):
-        URL = 'https://cloud-api.yandex.net/v1/disk/resources/'
-        requests.put(f'{URL}?path={name}', headers=self.get_headers())
+        uri = 'https://cloud-api.yandex.net/v1/disk/resources/'
+        requests.put(f'{uri}?path={name}', headers=self.get_headers())
 
     def upload_file(self, link, name):
         uri = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
-        path = f"{name_dir}/{name}"
+        path = f"{name_dir}/{name}.jpg"
         params = {'url': link, 'path': path, 'disable_redirects': True}
         requests.post(uri, headers=self.get_headers(), params=params)
 
@@ -56,11 +55,11 @@ class YA:
         return response.json()
 
 
-def grab_avatars():
+def grab_avatars(size):
     for x in res.values():
         for y in x['items']:
             for s in y['sizes']:
-                if s['type'] == 'z':
+                if s['type'] == size:
                     if y['likes']['count'] in avatar_links.keys():
                         avatar_links.update({y['likes']['count'] + y['date']: s['url']})
                     else:
@@ -76,7 +75,7 @@ def grab_avatars():
     print(f'Upload, {num} file(s)')
     return pprint(ya.file_info(num))
 
-
+size = 'z'
 name_dir = 'avatar'
 ya = YA(TOKEN)
 access_token = access_token
@@ -86,7 +85,8 @@ res = vk.photos_get()
 avatar_links = {}
 
 
-grab_avatars()
+grab_avatars(size)
+
 
 
 
