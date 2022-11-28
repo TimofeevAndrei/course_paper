@@ -1,18 +1,6 @@
-def creat_settings_file():
-    TOKEN = input('Введите токен Яндекс.Полигона: ')
-    access_token = input('Введите токен VK: ')
-    user_id = input('Введите VK User_id: ')
-    f = open("settings.py", "w")
-    f.write(f'TOKEN = "{TOKEN}" \n')
-    f.write(f'access_token = "{access_token}" \n')
-    f.write(f'user_id = "{user_id}" \n')
-    f.close()
-
-
-creat_settings_file()
-
 import json
 import requests
+from creat_settings import creat_settings_file
 from pprint import pprint
 from settings import TOKEN
 from settings import access_token
