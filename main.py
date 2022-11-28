@@ -3,29 +3,29 @@ import requests
 from creat_settings import creat_settings_file
 from pprint import pprint
 from settings import TOKEN
-from settings import access_token
+from vk_access_token import access_token
 from settings import user_id
 from tqdm import tqdm
 
 
 class VK:
-   def __init__(self, access_token, user_id, version='5.131'):
-       self.token = access_token
-       self.id = user_id
-       self.version = version
-       self.params = {'access_token': self.token, 'v': self.version}
+    def __init__(self, access_token, user_id, version='5.131'):
+        self.token = access_token
+        self.id = user_id
+        self.version = version
+        self.params = {'access_token': self.token, 'v': self.version}
 
-   def users_info(self):
-       uri = 'https://api.vk.com/method/users.get'
-       params = {'user_ids': self.id}
-       response = requests.get(uri, params={**self.params, **params})
-       return response.json()
+    def users_info(self):
+        uri = 'https://api.vk.com/method/users.get'
+        params = {'user_ids': self.id}
+        response = requests.get(uri, params={**self.params, **params})
+        return response.json()
 
-   def photos_get(self):
-       uri = 'https://api.vk.com/method/photos.get'
-       params = {'user_ids': self.id, 'album_id': 'profile', 'extended': 1}
-       response = requests.get(uri, params={**self.params, **params})
-       return response.json()
+    def photos_get(self):
+        uri = 'https://api.vk.com/method/photos.get'
+        params = {'user_ids': self.id, 'album_id': 'profile', 'extended': 1}
+        response = requests.get(uri, params={**self.params, **params})
+        return response.json()
 
 
 class YA:
@@ -48,8 +48,9 @@ class YA:
         response = requests.post(uri, headers=self.get_headers(), params=params)
         return response
 
-    # Вопрос хотел использовать данный метод для формирования основы для json файла по итогу загрузки
-    # но сколько не старался, данный метод пропускал один последний загружаемый файл. Так и не поняли в чем проблема
+    #  Вопрос хотел использовать данный метод для формирования основы для json файла по итогу загрузки
+    #  но сколько не старался, данный метод пропускал один последний загружаемый файл. Так и не поняли в чем проблема
+    #  есть догадка что нужно было выждать паузу между загрузкой последнего файла и запуском данного метода
     # def file_info(self, num):
     #     uri = 'https://cloud-api.yandex.net/v1/disk/resources/last-uploaded'
     #     params = {'limit': num, 'fields': 'items.name'}
@@ -98,8 +99,7 @@ grab_avatars(size)
 with open("upload_files.json", "w") as x:
     json.dump(uploaded_files, x)
 
-# Осталось сделать ввод токенов и айди
-# Все зависимости должны быть указаны в файле requiremеnts.txt
+
 
 
 
