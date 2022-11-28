@@ -1,7 +1,20 @@
+def creat_settings_file():
+    TOKEN = input('Введите токен Яндекс.Полигона: ')
+    access_token = input('Введите токен VK: ')
+    user_id = input('Введите VK User_id: ')
+    f = open("settings.py", "w")
+    f.write(f'TOKEN = "{TOKEN}" \n')
+    f.write(f'access_token = "{access_token}" \n')
+    f.write(f'user_id = "{user_id}" \n')
+    f.close()
+
+
+creat_settings_file()
+
 import json
 import requests
-from settings import TOKEN
 from pprint import pprint
+from settings import TOKEN
 from settings import access_token
 from settings import user_id
 from tqdm import tqdm
@@ -80,6 +93,7 @@ def grab_avatars(size):
             temp_dict['size'] = size
             uploaded_files.append(temp_dict)
     return pprint(uploaded_files)
+
 
 size = 'z'
 name_dir = 'avatar'
