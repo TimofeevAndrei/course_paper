@@ -5,8 +5,6 @@ from pprint import pprint
 from settings import access_token
 from settings import user_id
 from tqdm import tqdm
-from time import sleep
-
 
 
 class VK:
@@ -74,7 +72,7 @@ def grab_avatars(size):
         if num == 11:
             break
         ya.upload_file(v, k)
-    print(f'Upload, {num} file(s)')
+    print(f'Uploaded, {num} file(s) to a folder "{name_dir}"')
     if len(avatar_links) == num:
         for k in avatar_links.keys():
             temp_dict = {}
