@@ -3,6 +3,7 @@ import requests
 from creat_settings import creat_settings_file
 from pprint import pprint
 from settings import TOKEN
+from settings import counts
 from vk_access_token import access_token
 from settings import user_id
 from tqdm import tqdm
@@ -21,9 +22,9 @@ class VK:
         response = requests.get(uri, params={**self.params, **params})
         return response.json()
 
-    def photos_get(self):
+    def photos_get(self, counts):
         uri = 'https://api.vk.com/method/photos.get'
-        params = {'user_ids': self.id, 'album_id': 'profile', 'extended': 1}
+        params = {'owner_id': self.id, 'album_id': 'profile', 'extended': 1, 'count': counts}
         response = requests.get(uri, params={**self.params, **params})
         return response.json()
 
@@ -47,15 +48,6 @@ class YA:
         params = {'url': link, 'path': path, 'disable_redirects': True}
         response = requests.post(uri, headers=self.get_headers(), params=params)
         return response
-
-    #  Вопрос хотел использовать данный метод для формирования основы для json файла по итогу загрузки
-    #  но сколько не старался, данный метод пропускал один последний загружаемый файл. Так и не поняли в чем проблема
-    #  есть догадка что нужно было выждать паузу между загрузкой последнего файла и запуском данного метода
-    # def file_info(self, num):
-    #     uri = 'https://cloud-api.yandex.net/v1/disk/resources/last-uploaded'
-    #     params = {'limit': num, 'fields': 'items.name'}
-    #     response = requests.get(uri, headers=self.get_headers(), params=params)
-    #     return response.json()
 
 
 def grab_avatars(size):
@@ -89,8 +81,9 @@ name_dir = 'avatar'
 ya = YA(TOKEN)
 access_token = access_token
 user_id = user_id
+counts = counts
 vk = VK(access_token, user_id)
-res = vk.photos_get()
+res = vk.photos_get(counts)
 avatar_links = {}
 uploaded_files = []
 
