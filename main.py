@@ -1,6 +1,6 @@
 import json
 import requests
-from creat_settings import creat_settings_file
+# from creat_settings import creat_settings_file
 from pprint import pprint
 from settings import TOKEN
 from settings import counts
@@ -26,6 +26,7 @@ class VK:
         uri = 'https://api.vk.com/method/photos.get'
         params = {'owner_id': self.id, 'album_id': 'profile', 'extended': 1, 'count': counts}
         response = requests.get(uri, params={**self.params, **params})
+        pprint(response.json())
         return response.json()
 
 
@@ -50,28 +51,26 @@ class YA:
         return response
 
 
-def grab_avatars(size):
+def grab_avatars():
     for x in res.values():
         for y in x['items']:
-            for s in y['sizes']:
-                if s['type'] == size:
-                    if y['likes']['count'] in avatar_links.keys():
-                        avatar_links.update({y['likes']['count'] + y['date']: s['url']})
-                    else:
-                        avatar_links.update({y['likes']['count']: s['url']})
+            if y['likes']['count'] in avatar_links.keys():
+                avatar_links.update({y['likes']['count'] + y['date']: y['sizes'][-1]})
+            else:
+                avatar_links.update({y['likes']['count']: y['sizes'][-1]})
+    pprint(avatar_links)
     ya.create_folder(name_dir)
     for k, v in tqdm(avatar_links.items(), ncols=80, ascii=True, desc='Total'):
-        ya.upload_file(v, k)
+        ya.upload_file(v['url'], k)
     print(f'Uploaded, {counts} file(s) to a folder "{name_dir}"')
-    for k in avatar_links.keys():
+    for k, v in avatar_links.items():
         temp_dict = {}
         temp_dict['file_name'] = f'{k}.jpg'
-        temp_dict['size'] = size
+        temp_dict['size'] = v['type']
         uploaded_files.append(temp_dict)
     return pprint(uploaded_files)
 
 
-size = 'z'
 name_dir = 'avatar'
 ya = YA(TOKEN)
 access_token = access_token
@@ -82,7 +81,7 @@ res = vk.photos_get(counts)
 avatar_links = {}
 uploaded_files = []
 
-grab_avatars(size)
+grab_avatars()
 
 with open("upload_files.json", "w") as x:
     json.dump(uploaded_files, x)
