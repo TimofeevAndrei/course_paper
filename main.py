@@ -51,13 +51,19 @@ class YA:
         return response
 
 
-def grab_avatars(name_dir):
-    for x in res.values():
-        for y in x['items']:
-            if y['likes']['count'] in avatar_links.keys():
-                avatar_links.update({y['likes']['count'] + y['date']: y['sizes'][-1]})
-            else:
-                avatar_links.update({y['likes']['count']: y['sizes'][-1]})
+def grab_avatars(name_dir, res):
+    if list(res.keys())[0] == 'error':
+        return print('Страница удалена либо ещё не создана.')
+    elif list(res.keys())[0] == 'response':
+        if res['response']['count'] == 0:
+            return print('На странице нет фото для загрузки.')
+        elif res['response']['count'] > 0:
+            for x in res.values():
+                for y in x['items']:
+                    if y['likes']['count'] in avatar_links.keys():
+                        avatar_links.update({y['likes']['count'] + y['date']: y['sizes'][-1]})
+                    else:
+                        avatar_links.update({y['likes']['count']: y['sizes'][-1]})
     ya.create_folder(name_dir)
     for k, v in tqdm(avatar_links.items(), ncols=80, ascii=True, desc='Total'):
         ya.upload_file(v['url'], k)
@@ -71,16 +77,15 @@ def grab_avatars(name_dir):
 
 
 ya = YA(TOKEN)
+vk = VK(access_token, user_id)
 name_dir = name_dir
 access_token = access_token
 user_id = user_id
 counts = counts
-vk = VK(access_token, user_id)
-res = vk.photos_get(counts)
 avatar_links = {}
 uploaded_files = []
 
-grab_avatars(name_dir)
+grab_avatars(name_dir, vk.photos_get(counts))
 
 with open("upload_files.json", "w") as x:
     json.dump(uploaded_files, x)
