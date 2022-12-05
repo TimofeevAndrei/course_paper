@@ -1,8 +1,9 @@
 import json
 import requests
-# from creat_settings import creat_settings_file
+from creat_settings import creat_settings_file
 from pprint import pprint
 from settings import TOKEN
+from settings import name_dir
 from settings import counts
 from vk_access_token import access_token
 from settings import user_id
@@ -26,7 +27,6 @@ class VK:
         uri = 'https://api.vk.com/method/photos.get'
         params = {'owner_id': self.id, 'album_id': 'profile', 'extended': 1, 'count': counts}
         response = requests.get(uri, params={**self.params, **params})
-        pprint(response.json())
         return response.json()
 
 
@@ -51,14 +51,13 @@ class YA:
         return response
 
 
-def grab_avatars():
+def grab_avatars(name_dir):
     for x in res.values():
         for y in x['items']:
             if y['likes']['count'] in avatar_links.keys():
                 avatar_links.update({y['likes']['count'] + y['date']: y['sizes'][-1]})
             else:
                 avatar_links.update({y['likes']['count']: y['sizes'][-1]})
-    pprint(avatar_links)
     ya.create_folder(name_dir)
     for k, v in tqdm(avatar_links.items(), ncols=80, ascii=True, desc='Total'):
         ya.upload_file(v['url'], k)
@@ -71,8 +70,8 @@ def grab_avatars():
     return pprint(uploaded_files)
 
 
-name_dir = 'avatar'
 ya = YA(TOKEN)
+name_dir = name_dir
 access_token = access_token
 user_id = user_id
 counts = counts
@@ -81,7 +80,7 @@ res = vk.photos_get(counts)
 avatar_links = {}
 uploaded_files = []
 
-grab_avatars()
+grab_avatars(name_dir)
 
 with open("upload_files.json", "w") as x:
     json.dump(uploaded_files, x)
