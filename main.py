@@ -60,19 +60,14 @@ def grab_avatars(size):
                     else:
                         avatar_links.update({y['likes']['count']: s['url']})
     ya.create_folder(name_dir)
-    num = 0
     for k, v in tqdm(avatar_links.items(), ncols=80, ascii=True, desc='Total'):
-        num += 1
-        if num == 11:
-            break
         ya.upload_file(v, k)
-    print(f'Uploaded, {num} file(s) to a folder "{name_dir}"')
-    if len(avatar_links) == num:
-        for k in avatar_links.keys():
-            temp_dict = {}
-            temp_dict['file_name'] = f'{k}.jpg'
-            temp_dict['size'] = size
-            uploaded_files.append(temp_dict)
+    print(f'Uploaded, {counts} file(s) to a folder "{name_dir}"')
+    for k in avatar_links.keys():
+        temp_dict = {}
+        temp_dict['file_name'] = f'{k}.jpg'
+        temp_dict['size'] = size
+        uploaded_files.append(temp_dict)
     return pprint(uploaded_files)
 
 

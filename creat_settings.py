@@ -5,7 +5,7 @@ def creat_settings_file():
     f = open("settings.py", "w")
     f.write(f'TOKEN = "{TOKEN}" \n')
     f.write(f'user_id = "{user_id}" \n')
-    f.write(f'user_id = "{counts}" \n')
+    f.write(f'counts = "{counts}" \n')
     f.close()
 
 
